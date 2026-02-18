@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Counter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.3);
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --surface2: #1a1a1a;
+            --border: rgba(255,255,255,0.06);
+            --text: #e8e8e8;
+            --muted: #555;
+            --ring-size: 260px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeSlideDown 0.6s ease forwards 0.1s;
+        }
+        .brand {
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .conn-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 5px 12px;
+        }
+        .conn-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--muted);
+            transition: background 0.4s ease;
+        }
+        .conn-dot.online {
+            background: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        .conn-dot.error { background: #ff3b30; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .main-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 32px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+            opacity: 0;
+            animation: fadeSlideDown 0.7s ease forwards 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 120px;
+            background: var(--accent-glow);
+            filter: blur(40px);
+            border-radius: 50%;
+            transition: background 1s ease;
+            pointer-events: none;
+        }
+        .ring-container {
+            position: relative;
+            width: var(--ring-size);
+            height: var(--ring-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ring-svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+        .ring-track { fill: none; stroke: var(--surface2); stroke-width: 6; }
+        .ring-fill {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1), stroke 1s ease;
+            filter: drop-shadow(0 0 6px var(--accent));
+        }
+        .ring-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .counter-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
+        .counter-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 88px;
+            line-height: 1;
+            color: var(--text);
+            letter-spacing: 0.02em;
+        }
+        .counter-unit { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+        .pct-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+        }
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .stat-box {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .stat-icon { font-size: 14px; }
+        .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; color: var(--text); }
+        .stat-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+        .footer-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            animation: fadeSlideDown 0.7s ease forwards 0.4s;
+        }
+        .footer-ts { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+        .footer-ts span { color: var(--text); }
+        .source-pill {
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+        .ring-container.flash::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: var(--accent-glow);
+            animation: flash-ring 0.6s ease forwards;
+            pointer-events: none;
+        }
+		#refresh-btn {
+			font-family: 'IBM Plex Mono', monospace;
+			font-size: 10px;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			padding: 6px 14px;
+			border-radius: 20px;
+			background: var(--surface2);
+			border: 1px solid var(--border);
+			color: var(--accent);
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+		#refresh-btn:hover  { background: var(--accent); color: var(--bg); }
+		#refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        @keyframes flash-ring {
+            0%   { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.15); }
+        }
+        .counter-number.bump {
+            animation: bump 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes bump {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 420px) {
+            :root { --ring-size: 220px; }
+            .counter-number { font-size: 72px; }
+            .main-card { padding: 28px 20px 24px; }
+        }
+		
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <div class="header">
+        <div class="brand">People Counter</div>
+        <div class="conn-badge">
+            <div class="conn-dot" id="conn-dot"></div>
+            <span id="conn-label">Connection…</span>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <div class="ring-container" id="ring-container">
+            <svg class="ring-svg" viewBox="0 0 260 260">
+                <circle class="ring-track" cx="130" cy="130" r="116"/>
+                <circle class="ring-fill" id="ring-fill" cx="130" cy="130" r="116"
+                    stroke-dasharray="729" stroke-dashoffset="729"/>
+            </svg>
+            <div class="ring-center">
+                <div class="counter-label">counter</div>
+                <div class="counter-number" id="counter-number">—</div>
+                <div class="counter-unit">People</div>
+            </div>
+            <div class="pct-badge" id="pct-badge">—%</div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-icon">↗</div>
+                <div class="stat-value" id="stat-entries">—</div>
+                <div class="stat-label">Entries</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">↙</div>
+                <div class="stat-value" id="stat-exits">—</div>
+                <div class="stat-label">Exits</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-card">
+        <div class="footer-ts" id="footer-ts">In attesa di dati…</div>
+        <button id="refresh-btn" onclick="fetchData()">↻ Aggiorna</button>
+    </div>
+
+</div>
+<script>
+    // ========== CONFIGURAZIONE ==========
+    const API_URL       = 'https://6chhwhuwbl.execute-api.us-east-1.amazonaws.com/prod/counter';
+    const POLL_INTERVAL = 3000;
+    // ====================================
+
+    const CIRC = 2 * Math.PI * 116;
+
+    function accentForPct(pct) {
+        if (pct < 60) return { color: '#00ff88', glow: 'rgba(0,255,136,0.3)' };
+        if (pct < 80) return { color: '#ffb800', glow: 'rgba(255,184,0,0.3)' };
+        return              { color: '#ff3b30',  glow: 'rgba(255,59,48,0.3)'  };
+    }
+
+    function setRing(pct) {
+        const clamped = Math.min(100, Math.max(0, pct));
+        document.getElementById('ring-fill').style.strokeDashoffset = CIRC * (1 - clamped / 100);
+        document.getElementById('pct-badge').textContent = Math.round(clamped) + '%';
+        const { color, glow } = accentForPct(clamped);
+        document.documentElement.style.setProperty('--accent', color);
+        document.documentElement.style.setProperty('--accent-glow', glow);
+    }
+
+    let currentCount = 0, animReq = null;
+
+    function animateTo(target) {
+        if (animReq) cancelAnimationFrame(animReq);
+        const start = currentCount, delta = target - start;
+        const dur = Math.min(800, Math.abs(delta) * 40 + 200);
+        const t0 = performance.now();
+        const numEl = document.getElementById('counter-number');
+        numEl.classList.remove('bump');
+
+        function step(now) {
+            const progress = Math.min((now - t0) / dur, 1);
+            const ease = 1 - Math.pow(1 - progress, 4);
+            numEl.textContent = Math.round(start + delta * ease);
+            if (progress < 1) {
+                animReq = requestAnimationFrame(step);
+            } else {
+                currentCount = target;
+                numEl.textContent = target;
+                void numEl.offsetWidth;
+                numEl.classList.add('bump');
+            }
+        }
+        animReq = requestAnimationFrame(step);
+    }
+
+    function flashRing() {
+        const rc = document.getElementById('ring-container');
+        rc.classList.remove('flash');
+        void rc.offsetWidth;
+        rc.classList.add('flash');
+        setTimeout(() => rc.classList.remove('flash'), 650);
+    }
+
+    let lastCounter = null;
+
+    function renderData(data) {
+		const counter    = parseFloat(data.counter    ?? 0);
+		const percentage = parseFloat(data.percentage ?? 0);
+		const entries    = data.entries ?? '—';
+		const exits      = data.exits   ?? '—';
+
+		animateTo(Math.round(counter));
+		setRing(percentage);
+		document.getElementById('stat-entries').textContent = Math.round(entries);
+		document.getElementById('stat-exits').textContent   = Math.round(exits);
+
+		if (counter !== lastCounter) { flashRing(); lastCounter = counter; }
+
+		const ts = new Date().toLocaleString('it-IT', {
+			hour: '2-digit', minute: '2-digit', second: '2-digit',
+			day: '2-digit', month: '2-digit'
+		});
+		document.getElementById('footer-ts').innerHTML = `Last refresh <span>${ts}</span>`;
+	}
+
+	function setConn(state, label) {
+		document.getElementById('conn-dot').className = 'conn-dot ' + state;
+		document.getElementById('conn-label').textContent = label;
+	}
+
+	async function fetchData() {
+		const btn = document.getElementById('refresh-btn');
+		btn.disabled = true;
+		btn.textContent = '↻ Loading…';
+		try {
+			const res = await fetch(API_URL);
+			if (!res.ok) throw new Error('HTTP ' + res.status);
+			renderData(await res.json());
+			setConn('online', 'Online');
+		} catch (e) {
+			setConn('error', 'Error');
+			console.error(e);
+		} finally {
+			btn.disabled = false;
+			btn.textContent = '↻ Refresh';
+		}
+	}
+
+	fetchData();
+</script>
+</body>
+</html>
