@@ -74,8 +74,7 @@ To establish a reliable "ground truth," the entire session was recorded on video
 
 Furthermore, a comparative analysis was performed to evaluate the performance of the current Time-of-Flight (ToF \- VL53L0X) sensor setup against the previously utilized Ultrasonic (HC-SR04) sensor setup.
 
-<video src="./Video/IotDemoAccuracyVideo.mp4" controls="controls" style="max-width: 100%;">
-</video>
+[Video Accuracy](https://drive.google.com/file/d/1OxKuw1uQVhibIJR9fOL3KLVE16Zz9t0i/view?usp=sharing)
 
 
 ### **3.2\. Experimental Results**
