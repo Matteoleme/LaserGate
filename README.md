@@ -16,9 +16,7 @@ LaserGate is a system for access and occupancy monitoring for Universities and l
 
 [Documentation Overview](https://github.com/Matteoleme/LaserGate/blob/main/docs/FinalDelivery/FinalDelivery.md)
 
-**Video Demo:**
-<video src="./docs/FinalDelivery/Video/VideoDemoPresentation.mp4" controls="controls" style="max-width: 100%;">
-</video>
+[Video Demo](https://drive.google.com/file/d/1-6mekuKEq6OahzDjqtRZHsdkTwcgWy8d/view?usp=sharing)
 
 # Previous Presentations
 
