@@ -1,4 +1,7 @@
+![Logo](./docs/FinalDelivery/imgs/LaserGateLogo-Final.png)
+
 # LaserGate
+
 IoT Algorithms and Services group project
 
 [Matteo Mastranza](https://www.linkedin.com/in/matteo-mastranza), [Alberto D'Onofrio](https://www.linkedin.com/in/alberto-d-onofrio-67623623a
