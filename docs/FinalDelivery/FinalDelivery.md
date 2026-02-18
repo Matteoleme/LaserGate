@@ -4,7 +4,7 @@
 
 The most significant evolution between the intermediate and final delivery of this project is the transition from ultrasonic sensors to VL53L0X Time-of-Flight (ToF) sensors. While the core directional counting logic remains fundamentally similar, the software architecture and the state-machine algorithm required some modifications to accommodate the new hardware, improve accuracy, and optimize power consumption.
 
-![Sensors Overview](./imgs/Sensors_photo.jpg)
+<img src="./imgs/Sensors_photo.jpg" alt="Alt Text" style="width:70%; height:auto;">
 
 ### **1.1. Sensor Migration and I2C Addressing Strategy**
 
@@ -231,7 +231,7 @@ The web dashboard is created only for **demonstration purposes** and is not the 
 
 ## 7. Conclusion
 
-The LaserGate project successfully demonstrates the design and implementation of a highly accurate, people-counting thing device. By identifying the physical limitations of ultrasonic sensors and migrating to photonics-based Time-of-Flight (VL53L0X) technology, the system achieved a remarkable leap in occupancy tracking accuracy, rising from 50.0% to 93.75%. 
+The LaserGate project successfully demonstrates the design and implementation of a highly accurate, room monitoring thing device. By identifying the physical limitations of ultrasonic sensors and migrating to photonics-based Time-of-Flight (VL53L0X) technology, the system achieved a remarkable leap in occupancy tracking accuracy, rising from 50.0% to 93.75%. 
 
-Furthermore, the project evolved from a simple tethered prototype into a robust, battery-operated standalone system. The implementation of a FreeRTOS-based architecture allowed for efficient multitasking, while we used deep sleep of the esp32 board to fit the low-power constraints. Finally, the transition to AWS IoT Core elevated the system's data telemetry, providing a secure, encrypted (TLS), and highly scalable cloud infrastructure suitable for real-world enterprise deployments.
+Furthermore, the project evolved from a simple prototype into a robust, battery-operated standalone system. The implementation of a FreeRTOS-based architecture allowed for efficient multitasking, while we used deep sleep of the esp32 board to fit the low-power constraints. Finally, the transition to AWS IoT Core elevated the system's data telemetry, providing a secure, encrypted (TLS), and highly scalable cloud infrastructure suitable for real-world enterprise deployments.
 
