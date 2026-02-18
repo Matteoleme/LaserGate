@@ -231,7 +231,7 @@ The web dashboard is created only for **demonstration purposes** and is not the 
 
 ## 7. Conclusion
 
-The LaserGate project successfully demonstrates the design and implementation of a highly accurate, people-counting edge device. By identifying the physical limitations of ultrasonic sensors and migrating to photonics-based Time-of-Flight (VL53L0X) technology, the system achieved a remarkable leap in occupancy tracking accuracy, rising from 50.0% to 93.75%. 
+The LaserGate project successfully demonstrates the design and implementation of a highly accurate, people-counting thing device. By identifying the physical limitations of ultrasonic sensors and migrating to photonics-based Time-of-Flight (VL53L0X) technology, the system achieved a remarkable leap in occupancy tracking accuracy, rising from 50.0% to 93.75%. 
 
 Furthermore, the project evolved from a simple tethered prototype into a robust, battery-operated standalone system. The implementation of a FreeRTOS-based architecture allowed for efficient multitasking, while we used deep sleep of the esp32 board to fit the low-power constraints. Finally, the transition to AWS IoT Core elevated the system's data telemetry, providing a secure, encrypted (TLS), and highly scalable cloud infrastructure suitable for real-world enterprise deployments.
 

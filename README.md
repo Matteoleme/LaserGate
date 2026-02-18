@@ -9,7 +9,7 @@ IoT Algorithms and Services group project
 
 ## Project Description
 
-LaserGate is a system for access and occupancy monitoring for Universities and libraires. Optimized for power efficiency, it counts passing individuals and synchronizes real-time room occupancy with an AWS cloud infrastructure.
+LaserGate is a system for access and occupancy monitoring for Universities and libraires. Optimized for power efficiency, it counts passing individuals and synchronizes room occupancy with an AWS cloud infrastructure.
 
 ![Photo Overview](./docs/FinalDelivery/imgs/Device_photo.jpg)
 
