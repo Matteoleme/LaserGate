@@ -4,6 +4,8 @@
 
 The most significant evolution between the intermediate and final delivery of this project is the transition from ultrasonic sensors to VL53L0X Time-of-Flight (ToF) sensors. While the core directional counting logic remains fundamentally similar, the software architecture and the state-machine algorithm required some modifications to accommodate the new hardware, improve accuracy, and optimize power consumption.
 
+![Sensors Overview](./imgs/Sensors_photo.jpg)
+
 ### **1.1. Sensor Migration and I2C Addressing Strategy**
 
 The system has shifted from measuring sound wave return times via digital Trigger/Echo pins to calculating the time a laser photon takes to bounce back. This provides a much faster sampling rate, higher precision, and a narrower detection cone, effectively eliminating lateral false positives.
@@ -72,6 +74,10 @@ To establish a reliable "ground truth," the entire session was recorded on video
 
 Furthermore, a comparative analysis was performed to evaluate the performance of the current Time-of-Flight (ToF \- VL53L0X) sensor setup against the previously utilized Ultrasonic (HC-SR04) sensor setup.
 
+<video src="./Video/IotDemoAccuracyVideo.mp4" controls="controls" style="max-width: 100%;">
+</video>
+
+
 ### **3.2\. Experimental Results**
 
 The following table summarizes the data extracted from the video analysis (Ground Truth) and the data registered by the two different sensor technologies.
@@ -133,6 +139,8 @@ The measured average current consumption for each state is as follows:
 
 The transmission state lasts for approximately 7 seconds.
 
+![Energy Measure](./imgs/EnergyMeasurementsStates.png)
+
 ### 4.3 Comparative Results
 Comparing these results with the previous ultrasonic sensor architecture:
 
@@ -147,10 +155,14 @@ We assume that each cycle is triggered by the start of a lecture and is composed
 * **Peak Activity (Lecture Start):** During the first 5 minutes, as students enter the lecture room and devices connect, the system handles a "worst-case" stress load.  
   * Average Current: $75 \\text{ mA}$  
   * Energy Consumed: $75 \\text{ mA} \\times (\\frac{5}{60} \\text{ h}) \= \\mathbf{6.25 \\text{ mAh}}$  
+![Energy Measure](./imgs/EnergyMeasurementComplete.png)
 * **Standby Activity (During Lecture):** For the remaining 90 minutes of the session, the device remains primarily in Deep Sleep.  
   * Average Current: $3 \\text{ mA}$  
   * Energy Consumed: $3 \\text{ mA} \\times 1.5 \\text{ h} \= \\mathbf{4.5 \\text{ mAh}}$
 **Total for one full cycle lesson (95 minutes):** $\\mathbf{10.75 \\text{ mAh}}$
+
+
+
 ---
 
 ### **5.2\. Daily Energy Consumption**
@@ -220,5 +232,7 @@ The web dashboard is created only for **demonstration purposes** and is not the 
 
 ## 7. Conclusion
 
+The LaserGate project successfully demonstrates the design and implementation of a highly accurate, people-counting edge device. By identifying the physical limitations of ultrasonic sensors and migrating to photonics-based Time-of-Flight (VL53L0X) technology, the system achieved a remarkable leap in occupancy tracking accuracy, rising from 50.0% to 93.75%. 
 
+Furthermore, the project evolved from a simple tethered prototype into a robust, battery-operated standalone system. The implementation of a FreeRTOS-based architecture allowed for efficient multitasking, while we used deep sleep of the esp32 board to fit the low-power constraints. Finally, the transition to AWS IoT Core elevated the system's data telemetry, providing a secure, encrypted (TLS), and highly scalable cloud infrastructure suitable for real-world enterprise deployments.
 
